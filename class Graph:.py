@@ -57,7 +57,24 @@ class Graph:
         raise NotImplementedError
 
     def connected_components(self):
-        # On définit les matrices d'adjacences
+        A=[] #listes vides qui contiendra les listes de composants connectés
+        nodes_v={node : False for node in self.nodes} #dictionnaire qui permet de savoir si l'on est déjà passé par un point
+
+        def components(node) :
+            L=[node]
+            for i in self.graph[node] :
+                k=i[0]
+                if not nodes_v[k] :
+                    nodes_v[k]=True
+                    L+=components(k) #on rajoute aux noeud ces composants
+            return L
+        
+        for k in self.nodes :
+            if not nodes_v[k] : A.append(components(k))
+
+        return A
+
+""" # On définit les matrices d'adjacences
         n = self.nb_nodes
         M = [[0 for i in range(n)] for i in range(n)]
         for i in range(n):
@@ -85,7 +102,7 @@ class Graph:
                 res[c] = []
             res[c].append(i)
         return res
-
+"""
     def connected_components_set(self):
         """
         The result should be a set of frozensets (one per component),
@@ -144,7 +161,9 @@ def graph_from_file(filename):
 get_component(G,v)
 composantes connexes de v
 
-visited (u) pour u dans V
+def visited (u) :
+    for i in 
+    pour u dans V
 true si u dans C(v)
 false sinon
 
@@ -161,3 +180,11 @@ visited = false
 for all v dans V
 if not visited(v):
     explore(v)
+ 
+ 
+ 
+ faire un test
+cdFolder rentrer dans le fichier
+ls pour voir les fichiers dans le fichier
+
+ """
