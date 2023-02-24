@@ -105,6 +105,6 @@ def graph_from_file(filename):
     return g
 
 
-# pour appeler un fichier, '..\nomdufichier' les deux points representent un retour en arrière ok j'essaye
+# pour appeler un fichier, '..\nomdufichier' les deux points representent un retour en arrière
 g = graph_from_file('/home/onyxia/ensae_prog23/input/network.00.in')
 print(g)
