@@ -1,3 +1,6 @@
+import numpy
+
+
 class Graph:
     def __init__(self, nodes=[]):
         self.nodes = nodes
@@ -54,7 +57,34 @@ class Graph:
         raise NotImplementedError
 
     def connected_components(self):
-        raise NotImplementedError
+        # On définit les matrices d'adjacences
+        n = self.nb_nodes
+        M = [[0 for i in range(n)] for i in range(n)]
+        for i in range(n):
+            for j in range(i+1, n):
+                if self.nodes[j] in self.graph[self.nodes[i]]:
+                    M[i][j] = 1
+                    M[j][i] = 1
+        for i in range(n):
+            M[i][i] = 1
+
+        T = numpy.arange(n)
+
+        modifications = True
+        while modifications:
+            modifications = False
+            for i in range(n):
+                for j in range(i+1, n):
+                    if M[i, j] == 1 and T[i] != T[j]:
+                        T[i] = T[j] = min(T[i], T[j])
+                        modifications = True
+        cnx = T
+        res = {}
+        for i, c in enumerate(cnx):
+            if c not in res:
+                res[c] = []
+            res[c].append(i)
+        return res
 
     def connected_components_set(self):
         """
@@ -106,5 +136,28 @@ def graph_from_file(filename):
 
 
 # pour appeler un fichier, '..\nomdufichier' les deux points representent un retour en arrière
-g = graph_from_file('/home/onyxia/ensae_prog23/input/network.00.in')
-print(g)
+# g = graph_from_file('/home/onyxia/ensae_prog23/input/network.00.in')
+# print(g)
+
+
+""" ce qu'il a ecrit au tableau
+get_component(G,v)
+composantes connexes de v
+
+visited (u) pour u dans V
+true si u dans C(v)
+false sinon
+
+def explore (G,v):
+    visited[v]=true
+    for each (u,v) dans E :
+        if not visited(u):
+            explore(u)
+
+
+DFS
+for all v dans V
+visited = false
+for all v dans V
+if not visited(v):
+    explore(v)
