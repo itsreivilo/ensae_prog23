@@ -1,5 +1,5 @@
 import numpy
-
+import math
 
 class Graph:
     def __init__(self, nodes=[]):
@@ -53,36 +53,36 @@ class Graph:
         self.nb_nodes += i
         self.nb_edges += 1
 
-    def get_path_with_power(self,p,t):
-        (u,v) = t # u et v sont deux chiffres qui representent un noeud
+    def get_path_with_power(self, p, t):
+        (u, v) = t  # u et v sont deux chiffres qui representent un noeud
         a = 0
         # Si les deux villes u et v ne sont pas dans une même composante connexe on renvoit 'None'
-        for i in connected_components_set(self):
+        for i in Graph.connected_components_set(self):
             if u not in i or v not in i:
                 a +=1
-        if a == len(connected_components_set(self)):
+        if a == len(Graph.connected_components_set(self)):
             return None
 
         # Donc les deux villes sont dans une même composante, maintenant on va étudier tous les chemins
         precedent = {x: None for u in self.nodes}
         Deja_traite = {x: False for u in self.nodes}
-        distance = { x: float('inf') for x in self.nodes}
+        distance = {x: float('inf') for x in self.nodes}
         distance[u] = 0
-        A_traite = [(distance[u],u)]
-        while A_traite:
-            dist_noeud, noeud = A_traite.pop()
+        A_traiter = [(distance[u], u)]
+        while A_traiter:
+            dist_noeud, noeud = A_traiter.pop()
             if not Deja_traite(noeud):
-                Deja_traite(noeud) = True
-                for (voisin,p_min,d) in self.graph[noeud]:
+                Deja_traite[noeud] = True
+                for (voisin, p_min, d) in self.graph[noeud]:
                     dist_voisin = dist_noeud + d
                     if p >= p_min and dist_voisin < distance[voisin]:
                         distance[voisin] = dist_voisin
                         precedent[voisin] = noeud
-                        A_traiter.append((dist_voisin,voisin))
+                        A_traiter.append((dist_voisin, voisin))
             A_traiter.sort(reverse=True)
         l = len(precedent)
         L = [v]
-        b = 0 # distance
+        b = 0  # distance
         a = precedent(v)
         for i in range(len(precedent)):
             L.append(a)
@@ -90,7 +90,7 @@ class Graph:
             if a == u:
                 break
             a = precedent(a)
-        return (L,b)
+        return (L, b)
 
     def connected_components(self):
         A = []  # listes vides qui contiendra les listes de composants connectés
@@ -104,13 +104,13 @@ class Graph:
                     nodes_v[k] = True
                     L += components(k)  # on rajoute aux noeud ces composants
             return L
-        
+
         for k in self.nodes:
-            if not nodes_v[k]: 
+            if not nodes_v[k]:
                 A.append(components(k))
 
         return A
-    
+
     def connected_components_set(self):
         """
         The result should be a set of frozensets (one per component),
@@ -127,18 +127,22 @@ class Graph:
         i = 2**j
         g = Graph.get_path_with_power(self, i, t)
 
-        while g == None:
+        while g is None:
             j += 1
             g = Graph.get_path_with_power(self, i, t)
 
         bas = 2**(j-1)
         haut = i
-        milieu = ent((haut-bas)/2)
-        h = Graph.get_path_with_power(self, milieu, t)
-            if h == None:
-          #finir la dichotomie!!      
 
-        raise NotImplementedError
+        while abs(bas-haut) > 1:
+            milieu = math.floor((haut+bas)/2)
+            h = Graph.get_path_with_power(self, milieu, t)
+            if h is None:
+                bas = milieu
+            else:
+                haut = milieu
+
+        return (math.floor(milieu), h[0])
 
     def graph_from_file(filename):
         """
@@ -178,37 +182,7 @@ class Graph:
 # g = graph_from_file('/home/onyxia/ensae_prog23/input/network.00.in')
 # print(g)
 
-""" ce qu'il a ecrit au tableau
-get_component(G,v)
-composantes connexes de v
 
-def visited (u) :
-    for i in 
-    pour u dans V
-true si u dans C(v)
-false sinon
-
-def explore (G,v):
-    visited[v]=true
-    for each (u,v) dans E :
-        if not visited(u):
-            explore(u)
-
-
-DFS
-for all v dans V
-visited = false
-for all v dans V
-if not visited(v):
-    explore(v)
- 
- 
- 
- faire un test
-cdFolder rentrer dans le fichier
-ls pour voir les fichiers dans le fichier
-
- """
 
 g = Graph.graph_from_file('/home/onyxia/work/ensae_prog23/input/network.01.in')
 print(g)
