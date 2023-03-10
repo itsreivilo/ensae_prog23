@@ -319,13 +319,13 @@ class Graph:
 
         while g is None:
 
-            j += 1
+            i *= 2
 
             g = Graph.get_path_with_power(self, src, dest, i)
 
 
 
-        bas = 2**(j-1)
+        bas = i/2
 
         haut = i
 
@@ -347,7 +347,7 @@ class Graph:
 
 
 
-        return (math.floor(milieu), h[0])
+        return [h, math.floor(haut)]
 
 
 
