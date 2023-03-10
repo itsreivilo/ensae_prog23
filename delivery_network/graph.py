@@ -420,3 +420,15 @@ def graph_from_file(filename):
                 raise Exception("Format incorrect")
 
     return g
+
+
+def kruskal(g):
+    """
+    Takes an object from the Graph class and return the minimum spanning tree.
+
+    Args:
+        g should be an object from the class Graph
+    """
+
+    #ideas : trier les arretes par puissances croissantes
+    #puis pour chaque arrete en partant de la plus basse puissance on la selctionne et on l'ajoute si elle ne forme pas de cycle
