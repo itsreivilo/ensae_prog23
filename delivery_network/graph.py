@@ -320,6 +320,31 @@ print(L)
 
 # Question 12 #
 
+def Find(x):
+
+            if Parent[x] == None:
+
+                Parent[x] = x
+
+                return x
+
+            else:
+
+                return Find(Parent[x])
+
+
+def Union(x,y):
+
+            xracine = Find(x)
+
+            yracine = Find(y)
+
+            if xracine != yracine:
+
+                Parent[xracine] = [yracine]
+
+    
+
 def kruskal(g):
     A = []
     L = [] # l'arbre couvrant minimal du haut vers le bas des noeuds #
@@ -366,19 +391,20 @@ def kruskal(g):
 
         # On va maintenant se servir de l'Union-Find pour déterminer si l'arrete ajouter créer un cycle ou pas #
 
-        Parent = {x for x in g.nodes}
-
+        Parent = {x: None for x in g.nodes}
+        
         def Find(x):
 
-            if Parent[x] assert Error:
+            if Parent[x] == None:
 
-                Parent[x].append(x)
+                Parent[x] = x
 
                 return x
 
             else:
 
-                return Find(Parent[x][0])
+                return Find(Parent[x])
+
 
         def Union(x,y):
 
@@ -389,6 +415,7 @@ def kruskal(g):
             if xracine != yracine:
 
                 Parent[xracine] = [yracine]
+        
 
         for a in R:
 
