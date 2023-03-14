@@ -280,7 +280,6 @@ import time, random
 
 def fonction_chrono(filename,  g_ch): # Question 10, chronométrer le temps pris par la fonction min power pour chacun des fichiers routes.x.input #
 
-    g = Graph(filename)
 
     t = time.perf_counter()
 
@@ -289,11 +288,11 @@ def fonction_chrono(filename,  g_ch): # Question 10, chronométrer le temps pris
 
     for i in range(100):
 
-        a = g.nodes[random.randint(0,len(g.nodes)-1)]
+        a = g_ch.nodes[random.randint(0,len(g_ch.nodes)-1)]
 
-        b = g.nodes[random.randint(0,len(g.nodes)-1)]
+        b = g_ch.nodes[random.randint(0,len(g_ch.nodes)-1)]
 
-        M = g.min_power(a,b)
+        M = g_ch.min_power(a,b)
 
         L, p = M[0], M[1]
 
