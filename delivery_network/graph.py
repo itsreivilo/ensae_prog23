@@ -370,7 +370,7 @@ def kruskal(g):
 
         def Find(x):
 
-            if Parent[x] == []:
+            if Parent[x] assert Error:
 
                 Parent[x].append(x)
 
