@@ -299,13 +299,11 @@ def fonction_chrono(filename,  g_ch): # Question 10, chronométrer le temps pris
     t_int = time.perf_counter()
 
 
-
-
     t_fin = (t_int - t)*(k/100)
 
     return t_fin
 
-
+'''
 for x in range(1,11):
 
     L= []
@@ -315,14 +313,12 @@ for x in range(1,11):
     L.append(fonction_chrono(route,g_ch))
 
 print(L)
-
+'''
 # Fin de la question 10 #
 
 
 
 # Question 12 #
-
-
 
 def kruskal(g):
     L = [] # l'arbre couvrant minimal du haut vers le bas des noeuds #
@@ -403,6 +399,10 @@ def kruskal(g):
 
     return L, Parent
 
+# Question 13 #
+
+g = graph_from_file('input/network.1.in')
+print(kruskal(g))
 
 
 # Question 14 # 
