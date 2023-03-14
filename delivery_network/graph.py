@@ -456,3 +456,17 @@ def min_power_opti(g,t):
 
 
 fonction_chrono(filename)
+
+# Question 15
+
+# Nous avons encore quelques bug pour Q10, mais on calcule pour Q14 le temps, on comparera plus tard
+
+def chrono2(filename):
+    t = time.perf_counter()
+    
+
+
+    t_fin = time.perf_counter()
+    
+
+    return t_fin - t
