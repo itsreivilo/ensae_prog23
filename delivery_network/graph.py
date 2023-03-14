@@ -321,6 +321,7 @@ print(L)
 # Question 12 #
 
 def kruskal(g):
+    A = []
     L = [] # l'arbre couvrant minimal du haut vers le bas des noeuds #
 
     for a in g.connected_components(): # j'applique kruskal sur chaque composante connexe de g #
@@ -329,15 +330,17 @@ def kruskal(g):
 
         T = []
 
-        for i in a:
+        for i in range(len(a)):
+            b = a[i]
 
             T.append([])
 
-            for j in g.graph[i]:
+            for j in g.graph[b]:
 
                 if j not in(R):
 
-                    T[i].append((i,j(0),j(1)))
+                    T[i].append((a[i], j[0], j[1]))
+                
 
                     R.append(j)
 
@@ -353,7 +356,7 @@ def kruskal(g):
 
             j = n-1
 
-            while j>=0 and R[j](2) > cle(2):
+            while j>=0 and R[j][2] > cle[2]:
 
                 R[j+1] = R[j]
 
@@ -389,7 +392,7 @@ def kruskal(g):
 
         for a in R:
 
-            u, v = a(0), a(1)
+            u, v = a[0], a[1]
 
             if Find(u) != Find(v):
 
@@ -401,7 +404,7 @@ def kruskal(g):
 
 # Question 13 #
 
-g = graph_from_file('input/network.1.in')
+g = graph_from_file('input/network.01.in')
 print(kruskal(g))
 
 
