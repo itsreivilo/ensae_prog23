@@ -280,7 +280,7 @@ import time, random
 
 def fonction_chrono(filename): # Question 10, chronométrer le temps pris par la fonction min power pour chacun des fichiers routes.x.input #
 
-    g = graph_from_file(filename)
+    g = Graph(filename)
 
     t = time.perf_counter()
 
@@ -296,10 +296,6 @@ def fonction_chrono(filename): # Question 10, chronométrer le temps pris par la
 
     t_int = time.perf_counter()
 
-    with open(filename, "r") as file:
-
-        n, m = map(int, file.readline().split())
-    
     # Calculons le nombre de trajet possibles #
 
     # On prend chaque composante connexe, chaque noeud a un trajet avec un autre noeud de sa composante connexe #
@@ -326,7 +322,7 @@ for x in range(1,11):
 
     L= []
 
-    route = 'routes.'+str(x)+'.in'
+    route = 'input/routes.'+str(x)+'.in'
 
     L.append(fonction_chrono(route))
 
