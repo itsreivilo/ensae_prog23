@@ -55,7 +55,7 @@ class Graph:
         return output
 
 
-    def add_edge(self, node1, node2, power_min, dist=1):
+    def add_edge(self, node1, node2, power_min, dist=1): # Question 1#
         """
         Adds an edge to the graph. Graphs are not oriented, hence an edge is added to the adjacency list of both end nodes. 
 
@@ -74,7 +74,7 @@ class Graph:
         dist: numeric (int or float), optional
             Distance between node1 and node2 on the edge. Default is 1.
         """
-
+# On regarde pour chacun des deux noeuds si ils sont déjà dans le graphes ou non, auquel cas on les ajoute, sinon on rajoute seulement l'arrête
         if node1 not in self.graph:
             self.graph[node1] = []
             self.nb_nodes += 1
@@ -84,16 +84,50 @@ class Graph:
             self.graph[node2] = []
             self.nb_nodes += 1
             self.nodes.append(node2)
-
+#On rajoute l'arrête à chaque noeud, la puissance associée et la distance
         self.graph[node1].append((node2, power_min, dist))
         self.graph[node2].append((node1, power_min, dist))
         self.nb_edges += 1
 
 
-    def get_path_with_power(self, src, dest, power):
-        (u, v) = (src, dest)  # u et v sont deux chiffres qui representent un noeud
+    def connected_components(self): # Question 2 #
+
+        A = []  # A contiendra les listes de composantes connectées
+        nodes_v = {node: False for node in self.nodes}  # Dictionnaire qui permet de savoir si l'on est déjà passé par un point
+
+        def components(node): # Fonction qui visite les noeuds 
+            L = [node]
+
+            for i in self.graph[node]:
+                k = i[0]
+
+                if not nodes_v[k]:
+                    nodes_v[k] = True
+                    L += components(k)  # On rajoute aux noeud ces composants
+
+            return L
+
+        for k in self.nodes:
+
+            if not nodes_v[k]:
+                A.append(components(k))
+        return A
+
+
+    def connected_components_set(self):
+
+        """
+        The result should be a set of frozensets (one per component), 
+        For instance, for network01.in: {frozenset({1, 2, 3}), frozenset({4, 5, 6, 7})}
+        """
+
+        return set(map(frozenset, self.connected_components()))
+
+
+    def get_path_with_power(self, src, dest, power): # Question 3 #
+        (u, v) = (src, dest)  # u et v correspondent au trajet, en étant chacun un nombre correspondant à un noeud
         a = 0
-        # Si les deux villes u et v ne sont pas dans une même composante connexe on renvoit 'None'
+        # On vérifie que les deux villes sont dans la même composante connexe (et donc que le trajet est réalisable), si ce n'est pas le cas on renvoit 'None'
         for i in Graph.connected_components_set(self):
 
             if u not in i or v not in i:
@@ -102,7 +136,7 @@ class Graph:
         if a == len(Graph.connected_components_set(self)):
             return None
 
-        # Donc les deux villes sont dans une même composante, maintenant on va étudier tous les chemins
+        # On étudie maintenant tous les chemins
 
         precedent = {x: None for x in self.nodes}
         Deja_traite = {x: False for x in self.nodes}
@@ -151,47 +185,12 @@ class Graph:
         return M # Complexité de O(E)
 
 
-    def connected_components(self):
-
-        A = []  # listes vides qui contiendra les listes de composants connectés
-        nodes_v = {node: False for node in self.nodes}  # dictionnaire qui permet de savoir si l'on est déjà passé par un point
-
-        def components(node):
-            L = [node]
-
-            for i in self.graph[node]:
-                k = i[0]
-
-                if not nodes_v[k]:
-                    nodes_v[k] = True
-                    L += components(k)  # on rajoute aux noeud ces composants
-
-            return L
-
-        for k in self.nodes:
-
-            if not nodes_v[k]:
-                A.append(components(k))
-        return A
-
-
-    def connected_components_set(self):
-
+    def min_power(self, src, dest): # Question 6 #
         """
-        The result should be a set of frozensets (one per component), 
-        For instance, for network01.in: {frozenset({1, 2, 3}), frozenset({4, 5, 6, 7})}
+        Should return path, min_power.
         """
-
-        return set(map(frozenset, self.connected_components()))
-
-
-
-    def min_power(self, src, dest):
-        """
-        Should return path, min_power. 
-        """
-        j = 0
-        i = 2**j
+        # On procède à une dichotomie en commencant par les puisances de 2 afin d'éviter de tester trop de puissances
+        i = 1
         g = Graph.get_path_with_power(self, src, dest, i)
 
         while g is None:
@@ -213,11 +212,10 @@ class Graph:
 
         return [h, math.floor(haut)] 
 
-    # Pour la complexité : on utilise get_path_with_power dans l'algorithme dichotomique, la dichotomie se fait en O(log(i)), ici i est la puissance de 2 minimal qui dépasse p_min#
-
+    # Pour la complexité : on utilise get_path_with_power dans l'algorithme dichotomique, la dichotomie se fait en O(log(i)), ici i est la puissance de 2 minimal qui dépasse p_min
     # La complexité est donc de O(E*i) = O(E).
 
-def graph_from_file(filename):
+def graph_from_file(filename): # Question 1 et 4 #
     """
     Reads a text file and returns the graph as an object of the Graph class.
 
@@ -251,7 +249,7 @@ def graph_from_file(filename):
 
             if len(edge) == 3:
                 node1, node2, power_min = edge
-                g.add_edge(node1, node2, power_min) # will add dist=1 by default
+                g.add_edge(node1, node2, power_min) # Si la distance n'est pas précisée, la valeur par défaut est 1
 
             elif len(edge) == 4:
                 node1, node2, power_min, dist = edge
@@ -263,13 +261,14 @@ def graph_from_file(filename):
     return g
 
 
-def fonction_chrono(filename,  g_ch): # Question 10, chronométrer le temps pris par la fonction min power pour chacun des fichiers routes.x.input #
+# Question 10 #
+def fonction_chrono(filename,  g_ch): 
 
     t = time.perf_counter()
-
+# Ouverture du fichier et récupération des données
     with open(filename, "r") as file:
         k = map(int, file.readline().split())
-
+# On choisit au hasard un trajet et on applique la fonction, on repète le processus 100 fois pour trouver une valeur moyenne
     for i in range(100):
         a = g_ch.nodes[random.randint(0,len(g_ch.nodes)-1)]
         b = g_ch.nodes[random.randint(0,len(g_ch.nodes)-1)]
@@ -280,23 +279,22 @@ def fonction_chrono(filename,  g_ch): # Question 10, chronométrer le temps pris
     t_fin = (t_int - t)*(k/100)
     return t_fin
 
-'''
+# Test de la fonction et du temps nécessaire (semble ne pas fonctionner pour le moment mais nous n'avons pas encore réussi à résoudre ce problème)
 for x in range(1,11):
     L= []
     g_ch = graph_from_file('input/network.'+str(x)+'.in')
     route = 'input/routes.'+str(x)+'.in'
     L.append(fonction_chrono(route,g_ch))
 print(L)
-'''
 
-# Fin de la question 10 #
 
+# Question 12 #
 def kruskal(g):
     A = []
-    L = [] # l'arbre couvrant minimal du haut vers le bas des noeuds #
+    L = [] # L correspondra à l'arbre couvrant minimal, avec les noeuds du haut vers le bas
 
-    for a in g.connected_components(): # j'applique kruskal sur chaque composante connexe de g #
-        R = []  # liste des arrêtes de a ( la composante connexe) # 
+    for a in g.connected_components(): # On applique ce processus à chaque composante connexe
+        R = []  # R sera la liste des arrêtes de chacune des composantes connexes
         T = []
 
         for i in range(len(a)):
@@ -310,11 +308,11 @@ def kruskal(g):
                     R.append(j)
 
         for i in T:
-            A += i   # Maintenant on a la liste des arrêtes sous la forme (noeud1,noeud2,puissance), ce qui va nous servir pour l'Union-Find #
+            A += i   # Maintenant on a la liste des arrêtes sous la forme (noeud1,noeud2,puissance), ce qui va nous servir pour l'Union-Find 
 
         N = len(R)
 
-        for n in range(1,N): # on applique un tri par insertion sur les puissances des arrêtes #
+        for n in range(1,N): # On trie les arrêtes par ordre croissant
             cle = R[n]
             j = n-1
 
@@ -324,7 +322,7 @@ def kruskal(g):
 
             R[j+1] = cle
 
-        # On va maintenant se servir de l'Union-Find pour déterminer si l'arrete ajouter créer un cycle ou pas #
+        # On va maintenant se servir de l'Union-Find pour déterminer si l'arrête ajoutée crée un cycle ou pas 
 
         Parent = {x: None for x in g.nodes}
         
@@ -354,6 +352,7 @@ def kruskal(g):
                 Union(u,v)
 
     return L, Parent
+# Nous rencontrons encore des difficultés à terminer l'Union-Find de façon fonctionnelle
 
 # Question 13 #
 
@@ -366,7 +365,7 @@ def min_power_opti(g,t):
 
     A, Parent = kruskal(g)
 
-    # On a la liste des arrêtes et en se servant du dictionnaire on connait l'ordre des noeuds #
+    # On a la liste des arrêtes et en se servant du dictionnaire on connait l'ordre des noeuds 
 
     (source, destination) = t
     M = [source]
@@ -376,14 +375,4 @@ def min_power_opti(g,t):
 
 # Question 15
 
-# Nous avons encore quelques bug pour Q10, mais on calcule pour Q14 le temps, on comparera plus tard
-
-def chrono2(filename):
-    t = time.perf_counter()
-    
-
-
-    t_fin = time.perf_counter()
-    
-
-    return t_fin - t
+# N'ayant pas, pour le moment, réussi à faire fonctionner notre fonction test pour la Q10, nous ne pouvons pas encore comparer ces résultats
