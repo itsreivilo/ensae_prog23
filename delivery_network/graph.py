@@ -1,10 +1,14 @@
-import time, random, numpy, math
+import time
+import random
+import numpy
+import math
+
 
 class Graph:
     """
     A class representing graphs as adjacency lists and implementing various algorithms on the graphs. Graphs in the class are not oriented.
 
-    Attributes: 
+    Attributes:
     -----------
     nodes: NodeType
         A list of nodes. Nodes can be of any immutable type, e.g., integer, float, or string.
@@ -19,14 +23,14 @@ class Graph:
         The number of nodes.
 
     nb_edges: int
-        The number of edges. 
+        The number of edges.
     """
 
     def __init__(self, nodes=[]):
         """
-        Initializes the graph with a set of nodes, and no edges. 
+        Initializes the graph with a set of nodes, and no edges.
 
-        Parameters: 
+        Parameters:
 
         -----------
 
@@ -39,12 +43,11 @@ class Graph:
         self.nb_nodes = len(nodes)
         self.nb_edges = 0
 
-
     def __str__(self):
         """Prints the graph as a list of neighbors for each node (one per line)"""
 
         if not self.graph:
-            output = "The graph is empty"            
+            output = "The graph is empty"
 
         else:
             output = f"The graph has {self.nb_nodes} nodes and {self.nb_edges} edges.\n"
@@ -54,12 +57,11 @@ class Graph:
 
         return output
 
-
-    def add_edge(self, node1, node2, power_min, dist=1): # Question 1#
+    def add_edge(self, node1, node2, power_min, dist=1):  # Question 1#
         """
-        Adds an edge to the graph. Graphs are not oriented, hence an edge is added to the adjacency list of both end nodes. 
+        Adds an edge to the graph. Graphs are not oriented, hence an edge is added to the adjacency list of both end nodes.
 
-        Parameters: 
+        Parameters:
 
         -----------
 
@@ -84,27 +86,27 @@ class Graph:
             self.graph[node2] = []
             self.nb_nodes += 1
             self.nodes.append(node2)
-#On rajoute l'arrête à chaque noeud, la puissance associée et la distance
+# On rajoute l'arrête à chaque noeud, la puissance associée et la distance
         self.graph[node1].append((node2, power_min, dist))
         self.graph[node2].append((node1, power_min, dist))
         self.nb_edges += 1
 
 
 # Question 2 #
-    def components(self, node, nodes_v): # Fonction qui visite les noeuds 
-            L = [node]
+# Fonction qui visite les noeuds
+    def components(self, node, nodes_v):
+        L = [node]
 
-            for i in self.graph[node]:
-                k = i[0]
+        for i in self.graph[node]:
+            k = i[0]
 
-                if not nodes_v[k]:
-                    nodes_v[k] = True
-                    L += Graph.components(self, k, nodes_v)  # On rajoute aux noeud ces composants
+            if not nodes_v[k]:
+                nodes_v[k] = True
+                L += Graph.components(self, k, nodes_v)  # On rajoute aux noeud ces composants
 
-            return L
+        return L
 
-
-    def connected_components(self): 
+    def connected_components(self):
 
         A = []  # A contiendra les listes de composantes connectées
         nodes_v = {node: False for node in self.nodes}  # Dictionnaire qui permet de savoir si l'on est déjà passé par un point
@@ -116,25 +118,23 @@ class Graph:
                 A.append(Graph.components(self, k, nodes_v))
         return A
 
-
     def connected_components_set(self):
 
         """
-        The result should be a set of frozensets (one per component), 
+        The result should be a set of frozensets (one per component),
         For instance, for network01.in: {frozenset({1, 2, 3}), frozenset({4, 5, 6, 7})}
         """
 
         return set(map(frozenset, self.connected_components()))
 
-
-    def get_path_with_power(self, src, dest, power): # Question 3 #
+    def get_path_with_power(self, src, dest, power):  # Question 3 #
         (u, v) = (src, dest)  # u et v correspondent au trajet, en étant chacun un nombre correspondant à un noeud
         a = 0
         # On vérifie que les deux villes sont dans la même composante connexe (et donc que le trajet est réalisable), si ce n'est pas le cas on renvoit 'None'
         for i in Graph.connected_components_set(self):
 
             if u not in i or v not in i:
-                a +=1
+                a += 1
 
         if a == len(Graph.connected_components_set(self)):
             return None
@@ -165,7 +165,6 @@ class Graph:
 
             A_traiter.sort(reverse=True)
 
-        l = len(precedent)
         L = [v]
         a = precedent[v]
 
@@ -175,7 +174,7 @@ class Graph:
             if a == u:
                 break
 
-            if a == None:
+            if a is None:
                 return None
 
             a = precedent[a]
@@ -185,10 +184,9 @@ class Graph:
         for i in range(len(L)):
             M.append(L[-i-1])
 
-        return M # Complexité de O(E)
+        return M  # Complexité de O(E)
 
-
-    def min_power(self, src, dest): # Question 6 #
+    def min_power(self, src, dest):  # Question 6 #
         """
         Should return path, min_power.
         """
@@ -212,32 +210,33 @@ class Graph:
 
             else:
                 haut = milieu
-            
-            h= Graph.get_path_with_power(self, src, dest, math.floor(haut))
 
-        return [h, math.floor(haut)] 
+            h = Graph.get_path_with_power(self, src, dest, math.floor(haut))
+
+        return [h, math.floor(haut)]
 
     # Pour la complexité : on utilise get_path_with_power dans l'algorithme dichotomique, la dichotomie se fait en O(log(i)), ici i est la puissance de 2 minimal qui dépasse p_min
     # La complexité est donc de O(E*i) = O(E).
 
-def graph_from_file(filename): # Question 1 et 4 #
+
+def graph_from_file(filename):  # Question 1 et 4 #
     """
     Reads a text file and returns the graph as an object of the Graph class.
 
-    The file should have the following format: 
+    The file should have the following format:
         The first line of the file is 'n m'
         The next m lines have 'node1 node2 power_min dist' or 'node1 node2 power_min' (if dist is missing, it will be set to 1 by default)
         The nodes (node1, node2) should be named 1..n
         All values are integers.
 
-    Parameters: 
+    Parameters:
 
     -----------
 
     filename: str
         The name of the file
 
-    Outputs: 
+    Outputs:
 
     -----------
 
@@ -254,7 +253,7 @@ def graph_from_file(filename): # Question 1 et 4 #
 
             if len(edge) == 3:
                 node1, node2, power_min = edge
-                g.add_edge(node1, node2, power_min) # Si la distance n'est pas précisée, la valeur par défaut est 1
+                g.add_edge(node1, node2, power_min)  # Si la distance n'est pas précisée, la valeur par défaut est 1
 
             elif len(edge) == 4:
                 node1, node2, power_min, dist = edge
@@ -267,7 +266,7 @@ def graph_from_file(filename): # Question 1 et 4 #
 
 
 # Question 10 #
-def fonction_chrono(filename,  g_ch): 
+def fonction_chrono(filename,  g_ch):
 
     t = time.perf_counter()
 # Ouverture du fichier et récupération des données
@@ -275,14 +274,15 @@ def fonction_chrono(filename,  g_ch):
         k = map(int, file.readline().split())
 # On choisit au hasard un trajet et on applique la fonction, on repète le processus 100 fois pour trouver une valeur moyenne
     for i in range(100):
-        a = g_ch.nodes[random.randint(0,len(g_ch.nodes)-1)]
-        b = g_ch.nodes[random.randint(0,len(g_ch.nodes)-1)]
-        M = g_ch.min_power(a,b)
+        a = g_ch.nodes[random.randint(0, len(g_ch.nodes)-1)]
+        b = g_ch.nodes[random.randint(0, len(g_ch.nodes)-1)]
+        M = g_ch.min_power(a, b)
         L, p = M[0], M[1]
 
     t_int = time.perf_counter()
     t_fin = (t_int - t)*(k/100)
     return t_fin
+
 
 # Test de la fonction et du temps nécessaire (semble ne pas fonctionner pour le moment mais nous n'avons pas encore réussi à résoudre ce problème)
 '''for x in range(1,11):
@@ -331,7 +331,7 @@ def kruskal(g):
                     R.append(j)
 
         for u in T:
-            A += u   # Maintenant on a la liste des arrêtes sous la forme (noeud1,noeud2,puissance), ce qui va nous servir pour l'Union-Find 
+            A += u   # Maintenant on a la liste des arrêtes sous la forme (noeud1,noeud2,puissance), ce qui va nous servir pour l'Union-Find
 
         N = len(R)
 
@@ -345,7 +345,7 @@ def kruskal(g):
 
             R[j+1] = cle
 
-        # On va maintenant se servir de l'Union-Find pour déterminer si l'arrête ajoutée crée un cycle ou pas 
+        # On va maintenant se servir de l'Union-Find pour déterminer si l'arrête ajoutée crée un cycle ou pas
 
         Parent = {x: None for x in g.nodes}
 
@@ -364,13 +364,13 @@ def kruskal(g):
 g = graph_from_file('input/network.01.in')
 print(kruskal(g))
 
-# Question 14 # 
+# Question 14 #
 
 def min_power_opti(g,t):
 
     A, Parent = kruskal(g)
 
-    # On a la liste des arrêtes et en se servant du dictionnaire on connait l'ordre des noeuds 
+    # On a la liste des arrêtes et en se servant du dictionnaire on connait l'ordre des noeuds
 
     (source, destination) = t
     M = [source]
