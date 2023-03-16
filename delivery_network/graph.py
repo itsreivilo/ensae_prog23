@@ -292,16 +292,12 @@ def fonction_chrono(filename,  g_ch):
     L.append(fonction_chrono(route,g_ch))
 print(L)'''
 
-'''
 # Question 12 #
 def Find(x, Parent):
 
-    if Parent[x] == None:
-        Parent[x] = x
-        return x
-
-    else:
-        return Find(Parent[x], Parent)
+    while x != Parent[x]:
+        x = Parent[x]
+    return x
 
 
 def Union(x,y, Parent):
@@ -309,54 +305,55 @@ def Union(x,y, Parent):
     yracine = Find(y, Parent)
 
     if xracine != yracine:
-        Parent[xracine] = [yracine]
+        Parent[xracine] = yracine
 
 
 def kruskal(g):
     A = []
-    L = [] # L correspondra à l'arbre couvrant minimal, avec les noeuds du haut vers le bas
-
+    L = [] # L correspondra à l'arbre couvrant minimal, avec les noeuds du haut vers le bas par composante connexe
+    M = [] 
+    noeud_deja_vu = {x: False for x in g.nodes}
     for a in g.connected_components(): # On applique ce processus à chaque composante connexe
-        R = []  # R sera la liste des arrêtes de chacune des composantes connexes
-        T = []
+        R = []  
+        T = [] # T sera la liste des arrêtes de chacune des composantes connexes
 
         for i in range(len(a)):
             b = a[i]
-            T.append([])
+            
 
             for j in g.graph[b]:
-
-                if j not in(R):
-                    T[i].append((a[i], j[0], j[1]))
+                (u,v,w) = j
+                if j not in(R) and not(noeud_deja_vu[j[0]]):
+                    T.append((b, j[0], j[1]))
                     R.append(j)
+            noeud_deja_vu[b] = True
+        
+         # Maintenant on a la liste des arrêtes sous la forme (noeud1,noeud2,puissance), ce qui va nous servir pour l'Union-Find : T
 
-        for u in T:
-            A += u   # Maintenant on a la liste des arrêtes sous la forme (noeud1,noeud2,puissance), ce qui va nous servir pour l'Union-Find
+        N = len(T)
+        if N >1:
+            for n in range(1,N): # On trie les arrêtes par ordre croissant
+                cle = T[n]
+                j = n-1
 
-        N = len(R)
+                while j>=0 and T[j][2] > cle[2]:
+                    T[j+1] = T[j]
+                    j = j-1
 
-        for n in range(1,N): # On trie les arrêtes par ordre croissant
-            cle = R[n]
-            j = n-1
+                T[j+1] = cle
 
-            while j>=0 and R[j][2] > cle[2]:
-                R[j+1] = R[j]
-                j = j-1
+        # On va maintenant se servir de l'Union-Find pour déterminer si l'arrête ajoutée crée un cycle ou pas 
 
-            R[j+1] = cle
+        Parent = {x: x for x in g.nodes}
 
-        # On va maintenant se servir de l'Union-Find pour déterminer si l'arrête ajoutée crée un cycle ou pas
-
-        Parent = {x: None for x in g.nodes}
-
-        for a in R:
+        for a in T:
             u, v = a[0], a[1]
 
             if Find(u, Parent) != Find(v, Parent):
                 L.append(a)
                 Union(u,v, Parent)
-
-    return L, Parent
+        M.append(L)
+    return M, Parent
 # Nous rencontrons encore des difficultés à terminer l'Union-Find de façon fonctionnelle
 
 # Question 13 #
@@ -381,4 +378,4 @@ def min_power_opti(g,t):
 # Question 15
 
 # N'ayant pas, pour le moment, réussi à faire fonctionner notre fonction test pour la Q10, nous ne pouvons pas encore comparer ces résultats
-'''
+
