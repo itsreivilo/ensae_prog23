@@ -90,12 +90,8 @@ class Graph:
         self.nb_edges += 1
 
 
-    def connected_components(self): # Question 2 #
-
-        A = []  # A contiendra les listes de composantes connectées
-        nodes_v = {node: False for node in self.nodes}  # Dictionnaire qui permet de savoir si l'on est déjà passé par un point
-
-        def components(node): # Fonction qui visite les noeuds 
+# Question 2 #
+    def components(node): # Fonction qui visite les noeuds 
             L = [node]
 
             for i in self.graph[node]:
@@ -106,6 +102,14 @@ class Graph:
                     L += components(k)  # On rajoute aux noeud ces composants
 
             return L
+
+
+    def connected_components(self): 
+
+        A = []  # A contiendra les listes de composantes connectées
+        nodes_v = {node: False for node in self.nodes}  # Dictionnaire qui permet de savoir si l'on est déjà passé par un point
+
+        
 
         for k in self.nodes:
 
@@ -289,6 +293,24 @@ print(L)
 
 
 # Question 12 #
+def Find(x):
+
+    if Parent[x] == None:
+        Parent[x] = x
+        return x
+
+    else:
+        return Find(Parent[x])
+
+
+def Union(x,y):
+    xracine = Find(x)
+    yracine = Find(y)
+
+    if xracine != yracine:
+        Parent[xracine] = [yracine]
+
+
 def kruskal(g):
     A = []
     L = [] # L correspondra à l'arbre couvrant minimal, avec les noeuds du haut vers le bas
@@ -326,22 +348,7 @@ def kruskal(g):
 
         Parent = {x: None for x in g.nodes}
         
-        def Find(x):
-
-            if Parent[x] == None:
-                Parent[x] = x
-                return x
-
-            else:
-                return Find(Parent[x])
-
-
-        def Union(x,y):
-            xracine = Find(x)
-            yracine = Find(y)
-
-            if xracine != yracine:
-                Parent[xracine] = [yracine]
+        
         
 
         for a in R:
