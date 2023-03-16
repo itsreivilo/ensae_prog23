@@ -99,7 +99,7 @@ class Graph:
 
                 if not nodes_v[k]:
                     nodes_v[k] = True
-                    L += Graph.components(g, k, nodes_v)  # On rajoute aux noeud ces composants
+                    L += Graph.components(self, k, nodes_v)  # On rajoute aux noeud ces composants
 
             return L
 
@@ -109,11 +109,10 @@ class Graph:
         A = []  # A contiendra les listes de composantes connectées
         nodes_v = {node: False for node in self.nodes}  # Dictionnaire qui permet de savoir si l'on est déjà passé par un point
 
-        
-
         for k in self.nodes:
 
             if not nodes_v[k]:
+                nodes_v[k] = True
                 A.append(Graph.components(self, k, nodes_v))
         return A
 
@@ -213,6 +212,8 @@ class Graph:
 
             else:
                 haut = milieu
+            
+            h= Graph.get_path_with_power(self, src, dest, math.floor(haut))
 
         return [h, math.floor(haut)] 
 
@@ -291,7 +292,7 @@ def fonction_chrono(filename,  g_ch):
     L.append(fonction_chrono(route,g_ch))
 print(L)'''
 
-
+'''
 # Question 12 #
 def Find(x, Parent):
 
@@ -380,3 +381,4 @@ def min_power_opti(g,t):
 # Question 15
 
 # N'ayant pas, pour le moment, réussi à faire fonctionner notre fonction test pour la Q10, nous ne pouvons pas encore comparer ces résultats
+'''
