@@ -1,6 +1,6 @@
 # Question 8 : Tests sur les algorithmes fournis #
 
-from graph import Graph, graph_from_file
+from graph import Graph, graph_from_file, kruskal
 
 
 data_path = "input/"
@@ -15,7 +15,7 @@ g = graph_from_file(data_path + file_name)
 
 print(Graph.min_power(g, 1, 4))
 
-# Test de la fonction et du temps nécessaire (semble ne pas fonctionner pour le moment mais nous n'avons pas encore réussi à résoudre ce problème)
+# Test de la fonction et du temps nécessaire
 '''for x in range(1,11):
     L= []
     g_ch = graph_from_file('input/network.'+str(x)+'.in')

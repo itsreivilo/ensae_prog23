@@ -302,16 +302,16 @@ def Union(x,y, Parent):
 
 def kruskal(g):
     A = []
-    L = [] # L correspondra à l'arbre couvrant minimal, avec les noeuds du haut vers le bas par composante connexe
-    M = [] 
+    L = []  # L correspondra à l'arbre couvrant minimal, avec les noeuds du haut vers le bas par composante connexe
+    M = []
     noeud_deja_vu = {x: False for x in g.nodes}
-    for a in g.connected_components(): # On applique ce processus à chaque composante connexe
-        R = []  
-        T = [] # T sera la liste des arrêtes de chacune des composantes connexes
+    for a in g.connected_components():  # On applique ce processus à chaque composante connexe
+        R = []
+        T = []  # T sera la liste des arrêtes de chacune des composantes connexes
 
         for i in range(len(a)):
             b = a[i]
-            
+
 
             for j in g.graph[b]:
                 (u,v,w) = j
@@ -319,13 +319,13 @@ def kruskal(g):
                     T.append((b, j[0], j[1]))
                     R.append(j)
             noeud_deja_vu[b] = True
-        
-         # Maintenant on a la liste des arrêtes sous la forme (noeud1,noeud2,puissance), ce qui va nous servir pour l'Union-Find : T
-         # Sinon on aurait juste pu ouvrir le fichier et parcourir les arrêtes.
+
+        # Maintenant on a la liste des arrêtes sous la forme (noeud1,noeud2,puissance), ce qui va nous servir pour l'Union-Find : T
+        # Sinon on aurait juste pu ouvrir le fichier et parcourir les arrêtes.
 
         N = len(T)
         if N >1:
-            for n in range(1,N): # On trie les arrêtes par ordre croissant
+            for n in range(1,N):  # On trie les arrêtes par ordre croissant
                 cle = T[n]
                 j = n-1
 
@@ -335,7 +335,7 @@ def kruskal(g):
 
                 T[j+1] = cle
 
-        # On va maintenant se servir de l'Union-Find pour déterminer si l'arrête ajoutée crée un cycle ou pas 
+        # On va maintenant se servir de l'Union-Find pour déterminer si l'arrête ajoutée crée un cycle ou pas
 
         Parent = {x: x for x in g.nodes}
 
@@ -345,7 +345,7 @@ def kruskal(g):
             if Find(u, Parent) != Find(v, Parent):
                 L.append(a)
                 Union(u,v, Parent)
-        
+
     return L, Parent
 # Nous rencontrons encore des difficultés à terminer l'Union-Find de façon fonctionnelle
 
@@ -366,4 +366,3 @@ def min_power_opti(g,t):
 # Question 15
 
 # N'ayant pas, pour le moment, réussi à faire fonctionner notre fonction test pour la Q10, nous ne pouvons pas encore comparer ces résultats
-
