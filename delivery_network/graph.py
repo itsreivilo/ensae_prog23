@@ -329,6 +329,7 @@ def kruskal(g):
             noeud_deja_vu[b] = True
         
          # Maintenant on a la liste des arrêtes sous la forme (noeud1,noeud2,puissance), ce qui va nous servir pour l'Union-Find : T
+         # Sinon on aurait juste pu ouvrir le fichier et parcourir les arrêtes.
 
         N = len(T)
         if N >1:
@@ -352,13 +353,13 @@ def kruskal(g):
             if Find(u, Parent) != Find(v, Parent):
                 L.append(a)
                 Union(u,v, Parent)
-        M.append(L)
-    return M, Parent
+        
+    return L, Parent
 # Nous rencontrons encore des difficultés à terminer l'Union-Find de façon fonctionnelle
 
 # Question 13 #
 
-g = graph_from_file('input/network.01.in')
+g = graph_from_file('input/network.04.in')
 print(kruskal(g))
 
 # Question 14 #
