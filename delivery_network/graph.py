@@ -284,14 +284,6 @@ def fonction_chrono(filename,  g_ch):
     return t_fin
 
 
-# Test de la fonction et du temps nécessaire (semble ne pas fonctionner pour le moment mais nous n'avons pas encore réussi à résoudre ce problème)
-'''for x in range(1,11):
-    L= []
-    g_ch = graph_from_file('input/network.'+str(x)+'.in')
-    route = 'input/routes.'+str(x)+'.in'
-    L.append(fonction_chrono(route,g_ch))
-print(L)'''
-
 # Question 12 #
 def Find(x, Parent):
 
@@ -356,11 +348,6 @@ def kruskal(g):
         
     return L, Parent
 # Nous rencontrons encore des difficultés à terminer l'Union-Find de façon fonctionnelle
-
-# Question 13 #
-
-g = graph_from_file('input/network.04.in')
-print(kruskal(g))
 
 # Question 14 #
 

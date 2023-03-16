@@ -14,3 +14,16 @@ g = graph_from_file(data_path + file_name)
 # print(Graph.get_path_with_power(g, 1, 3, 50))
 
 print(Graph.min_power(g, 1, 4))
+
+# Test de la fonction et du temps nécessaire (semble ne pas fonctionner pour le moment mais nous n'avons pas encore réussi à résoudre ce problème)
+'''for x in range(1,11):
+    L= []
+    g_ch = graph_from_file('input/network.'+str(x)+'.in')
+    route = 'input/routes.'+str(x)+'.in'
+    L.append(fonction_chrono(route,g_ch))
+print(L)'''
+
+# Question 13 #
+
+g = graph_from_file('input/network.04.in')
+print(kruskal(g))
