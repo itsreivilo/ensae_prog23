@@ -291,7 +291,7 @@ def fonction_chrono(filename,  g_ch):
     L.append(fonction_chrono(route,g_ch))
 print(L)'''
 
-'''
+
 # Question 12 #
 def Find(x, Parent):
 
@@ -329,8 +329,8 @@ def kruskal(g):
                     T[i].append((a[i], j[0], j[1]))
                     R.append(j)
 
-        for i in T:
-            A += i   # Maintenant on a la liste des arrêtes sous la forme (noeud1,noeud2,puissance), ce qui va nous servir pour l'Union-Find 
+        for u in T:
+            A += u   # Maintenant on a la liste des arrêtes sous la forme (noeud1,noeud2,puissance), ce qui va nous servir pour l'Union-Find 
 
         N = len(R)
 
@@ -380,4 +380,3 @@ def min_power_opti(g,t):
 # Question 15
 
 # N'ayant pas, pour le moment, réussi à faire fonctionner notre fonction test pour la Q10, nous ne pouvons pas encore comparer ces résultats
-'''
