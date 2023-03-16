@@ -91,7 +91,7 @@ class Graph:
 
 
 # Question 2 #
-    def components(node): # Fonction qui visite les noeuds 
+    def components(self, node, nodes_v): # Fonction qui visite les noeuds 
             L = [node]
 
             for i in self.graph[node]:
@@ -99,7 +99,7 @@ class Graph:
 
                 if not nodes_v[k]:
                     nodes_v[k] = True
-                    L += components(k)  # On rajoute aux noeud ces composants
+                    L += Graph.components(g, k, nodes_v)  # On rajoute aux noeud ces composants
 
             return L
 
@@ -114,7 +114,7 @@ class Graph:
         for k in self.nodes:
 
             if not nodes_v[k]:
-                A.append(components(k))
+                A.append(Graph.components(self, k, nodes_v))
         return A
 
 
@@ -284,28 +284,28 @@ def fonction_chrono(filename,  g_ch):
     return t_fin
 
 # Test de la fonction et du temps nécessaire (semble ne pas fonctionner pour le moment mais nous n'avons pas encore réussi à résoudre ce problème)
-for x in range(1,11):
+'''for x in range(1,11):
     L= []
     g_ch = graph_from_file('input/network.'+str(x)+'.in')
     route = 'input/routes.'+str(x)+'.in'
     L.append(fonction_chrono(route,g_ch))
-print(L)
+print(L)'''
 
-
+'''
 # Question 12 #
-def Find(x):
+def Find(x, Parent):
 
     if Parent[x] == None:
         Parent[x] = x
         return x
 
     else:
-        return Find(Parent[x])
+        return Find(Parent[x], Parent)
 
 
-def Union(x,y):
-    xracine = Find(x)
-    yracine = Find(y)
+def Union(x,y, Parent):
+    xracine = Find(x, Parent)
+    yracine = Find(y, Parent)
 
     if xracine != yracine:
         Parent[xracine] = [yracine]
@@ -347,16 +347,13 @@ def kruskal(g):
         # On va maintenant se servir de l'Union-Find pour déterminer si l'arrête ajoutée crée un cycle ou pas 
 
         Parent = {x: None for x in g.nodes}
-        
-        
-        
 
         for a in R:
             u, v = a[0], a[1]
 
-            if Find(u) != Find(v):
+            if Find(u, Parent) != Find(v, Parent):
                 L.append(a)
-                Union(u,v)
+                Union(u,v, Parent)
 
     return L, Parent
 # Nous rencontrons encore des difficultés à terminer l'Union-Find de façon fonctionnelle
@@ -383,3 +380,4 @@ def min_power_opti(g,t):
 # Question 15
 
 # N'ayant pas, pour le moment, réussi à faire fonctionner notre fonction test pour la Q10, nous ne pouvons pas encore comparer ces résultats
+'''
