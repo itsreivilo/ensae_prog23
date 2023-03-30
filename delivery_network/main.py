@@ -1,6 +1,8 @@
 # Question 8 : Tests sur les algorithmes fournis #
 
-from graph import Graph, graph_from_file, kruskal
+from graph import Graph, graph_from_file, kruskal, fonction_chrono, fonction_chrono_opti
+
+
 
 
 data_path = "input/"
@@ -15,15 +17,25 @@ g = graph_from_file(data_path + file_name)
 
 print(Graph.min_power(g, 1, 4))
 
-# Test de la fonction et du temps nécessaire
-'''for x in range(1,11):
-    L= []
+# Test de la fonction et du temps nécessaire Q10
+def temps_chemin(x):
     g_ch = graph_from_file('input/network.'+str(x)+'.in')
     route = 'input/routes.'+str(x)+'.in'
-    L.append(fonction_chrono(route,g_ch))
-print(L)'''
+    print(fonction_chrono(route,g_ch))
+    
+
 
 # Question 13 #
-
+"""
 g = graph_from_file('input/network.04.in')
 print(kruskal(g))
+"""
+# Question 15 #
+
+
+def temps_chemin_opti(x):
+    g_ch = graph_from_file('input/network.'+str(x)+'.in')
+    route = 'input/routes.'+str(x)+'.in'
+    print(fonction_chrono_opti(route,g_ch))
+
+print(temps_chemin_opti(1))
