@@ -1,5 +1,6 @@
 #Question 18
 from graph import Graph, graph_from_file
+from operator import itemgetter
 #Première idée : algorithme glouton
 
 # On commence par associer à chaque trajet le profit rapporté 
@@ -30,7 +31,7 @@ for _ in range(m):
     if len(edge) != 2:
         raise Exception("Format incorrect")
 
-#C est la liste des coûts et de la puissance
+# C est la liste des coûts et de la puissance
 
 '''for each trajet 
 on cherche la puissance min necessaire
@@ -39,13 +40,31 @@ on se retrouvera avec une liste de tuples (trajet, utilite, cout)
 profit = utilite - cout
 liste de tuples (trajet, utilite, cout, profit)'''
 
-sort les trajets par utilite descending
+L_Sort = sorted(L, key=itemgetter(1), reverse=True)
+# On trie les trajets par ordre décroissant de profit
 
-for each trajet tries 
-pour le premier on regarde puissance minimale necessaire
-camion le moins cher qui a au moins cette puissance
-si son cout plus petit que le budget restsnat 
-on achete  et on l attribue a ce trajet 
-sinon on le prend pas et on passe au suivant 
+C_Sort = sorted(C, key=itemgetter(0,1))
+# On trie les camions par ordre croissant de puissance puis par ordre croissant de coût
 
-return la liste des (camions associes au trajet) et le budget restant et la somme du profit?
+B = 25*(10**9)
+# B est le budget de l'entreprise
+
+R = []
+# R sera la liste des camions à acheter associés à leur trajet respectif
+
+Pi = 0
+# Pi sera le profit total
+
+for i in range(len(L_Sort)) :
+    puis = Graph.min_power(self, L_Sort[i][0])
+    J = []
+    while J == []:
+        for j in range(len(C_Sort)):
+            if C_Sort[j][0] >= puis:
+                J.append(C_Sort[j][0])
+    if J[0][1] <= B:
+        B = B - J[0][1]
+        R.append((L_Sort[i][0], C_Sort[j]))
+        Pi += J[0][0]
+
+print('La liste des camions à acheter est : ', R,'\n Le profit total ainsi réalisé par l\'entreprise sera de', Pi, 'et son budget restant sera de', B)
