@@ -1,41 +1,48 @@
-# Question 8 : Tests sur les algorithmes fournis #
-
-from graph import Graph, graph_from_file, kruskal, fonction_chrono, fonction_chrono_opti
+from graph import Graph, graph_from_file, kruskal, fonction_chrono
+from graph import fonction_chrono_opti, min_power_opti
 
 
 
 
 data_path = "input/"
-file_name = "network.04.in"
+file_name = "network.2.in"
 
 g = graph_from_file(data_path + file_name)
 # print(g)
 
 # print(Graph.connected_components(g))
 
-# print(Graph.get_path_with_power(g, 1, 3, 50))
+# print(Graph.get_path_with_power(g, 1, 36866, 1000000))
 
-print(Graph.min_power(g, 1, 4))
+print(kruskal(g))
+
+# print(min_power_opti(g, [1, 36866]))
 
 # Test de la fonction et du temps nécessaire Q10
+"""
 def temps_chemin(x):
     g_ch = graph_from_file('input/network.'+str(x)+'.in')
     route = 'input/routes.'+str(x)+'.in'
     print(fonction_chrono(route,g_ch))
-    
 
+print(temps_chemin(1))
 
+"""
 # Question 13 #
 """
 g = graph_from_file('input/network.04.in')
 print(kruskal(g))
 """
 # Question 15 #
+"""
+g_ch = graph_from_file('input/network.'+str(2)+'.in')
+route = 'input/routes.'+str(2)+'.in'
+print(fonction_chrono_opti(route, g_ch))
+"""
 
 
-def temps_chemin_opti(x):
-    g_ch = graph_from_file('input/network.'+str(x)+'.in')
-    route = 'input/routes.'+str(x)+'.in'
-    print(fonction_chrono_opti(route,g_ch))
 
-print(temps_chemin_opti(1))
+"""
+route = 'input/routes.'+str(1)+'.in'
+print(route)
+"""
