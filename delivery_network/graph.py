@@ -756,9 +756,10 @@ fichier = open("myFile.txt", "w+")
 #Question 18
 from graph import Graph, graph_from_file
 from operator import itemgetter
+
 #Première idée : algorithme glouton
 def maximisation_profit():
-    
+
     # On commence par associer à chaque trajet le profit rapporté 
     j = graph_from_file('network.1.in')
 

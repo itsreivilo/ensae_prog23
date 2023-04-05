@@ -1,5 +1,5 @@
 from graph import Graph, graph_from_file, kruskal, fonction_chrono
-from graph import fonction_chrono_opti, min_power_opti
+from graph import fonction_chrono_opti, min_power_opti, maximisation_profit
 
 
 
