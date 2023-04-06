@@ -1,191 +1,98 @@
 import time
-
 import random
-
 import numpy as np
-
 import math
-
 from tqdm import tqdm
 
-
-
-
-
 class Graph:
-
     """
-
     A class representing graphs as adjacency lists and implementing various algorithms on the graphs. Graphs in the class are not oriented.
 
-
-
     Attributes:
-
     -----------
-
     nodes: NodeType
-
         A list of nodes. Nodes can be of any immutable type, e.g., integer, float, or string.
-
         We will usually use a list of integers 1, ..., n.
 
-
-
     graph: dict
-
         A dictionnary that contains the adjacency list of each node in the form
-
         graph[node] = [(neighbor1, p1, d1), (neighbor1, p1, d1), ...]
-
         where p1 is the minimal power on the edge (node, neighbor1) and d1 is the distance on the edge
 
-
-
     nb_nodes: int
-
         The number of nodes.
 
-
-
     nb_edges: int
-
         The number of edges.
-
     """
 
-
-
     def __init__(self, nodes=[]):
-
         """
-
         Initializes the graph with a set of nodes, and no edges.
 
-
-
         Parameters:
-
-
-
         -----------
-
-
-
         nodes: list, optional
-
             A list of nodes. Default is empty.
-
         """
 
-
-
         self.nodes = nodes
-
         self.graph = dict([(n, []) for n in nodes])
-
         self.nb_nodes = len(nodes)
-
         self.nb_edges = 0
 
 
-
     def __str__(self):
-
         """Prints the graph as a list of neighbors for each node (one per line)"""
 
-
-
         if not self.graph:
-
             output = "The graph is empty"
 
-
-
         else:
-
             output = f"The graph has {self.nb_nodes} nodes and {self.nb_edges} edges.\n"
 
-
-
             for source, destination in self.graph.items():
-
                 output += f"{source}-->{destination}\n"
-
-
 
         return output
 
 
-
     def add_edge(self, node1, node2, power_min, dist=1):  # Question 1#
-
         """
-
         Adds an edge to the graph. Graphs are not oriented, hence an edge is added to the adjacency list of both end nodes.
 
-
-
         Parameters:
-
-
-
         -----------
-
-
-
         node1: NodeType
-
             First end (node) of the edge
 
-
-
         node2: NodeType
-
             Second end (node) of the edge
 
-
-
         power_min: numeric (int or float)
-
             Minimum power on this edge
 
         dist: numeric (int or float), optional
-
             Distance between node1 and node2 on the edge. Default is 1.
-
         """
 
 # On regarde pour chacun des deux noeuds si ils sont déjà dans le graphes ou non, auquel cas on les ajoute, sinon on rajoute seulement l'arrête
 
         if node1 not in self.graph:
-
             self.graph[node1] = []
-
             self.nb_nodes += 1
-
             self.nodes.append(node1)
 
-
-
         if node2 not in self.graph:
-
             self.graph[node2] = []
-
             self.nb_nodes += 1
-
             self.nodes.append(node2)
 
 # On rajoute l'arrête à chaque noeud, la puissance associée et la distance
 
         self.graph[node1].append((node2, power_min, dist))
-
         self.graph[node2].append((node1, power_min, dist))
-
         self.nb_edges += 1
-
-
-
 
 
 # Question 2 #
@@ -193,66 +100,37 @@ class Graph:
 # Fonction qui visite les noeuds
 
     def components(self, node, nodes_v):
-
         L = [node]
 
-
-
         for i in self.graph[node]:
-
             k = i[0]
 
-
-
             if not nodes_v[k]:
-
                 nodes_v[k] = True
-
                 L += Graph.components(self, k, nodes_v)  # On rajoute aux noeud ces composants
-
-
 
         return L
 
 
-
     def connected_components(self):
 
-
-
         A = []  # A contiendra les listes de composantes connectées
-
         nodes_v = {node: False for node in self.nodes}  # Dictionnaire qui permet de savoir si l'on est déjà passé par un point
-
-
 
         for k in self.nodes:
 
-
-
             if not nodes_v[k]:
-
                 nodes_v[k] = True
-
                 A.append(Graph.components(self, k, nodes_v))
 
         return A
 
 
-
     def connected_components_set(self):
-
-
-
         """
-
         The result should be a set of frozensets (one per component),
-
         For instance, for network01.in: {frozenset({1, 2, 3}), frozenset({4, 5, 6, 7})}
-
         """
-
-
 
         return set(map(frozenset, self.connected_components()))
 
@@ -265,184 +143,100 @@ class Graph:
         deja_vu = []
 
         while A_examiner != []:
-
             sommet, chemin = A_examiner.pop(0)
             deja_vu.append(sommet)
 
             for voisin in self.graph[sommet]:
 
                 if voisin[0] not in deja_vu:
+
                     if voisin[1] <= power:
+
                         if voisin[0] == dest:
                             chemins.append(chemin+ [voisin[0]])
                             return chemins[0]
                             A_examiner = []
+
                         else:
                             A_examiner.append((voisin[0], chemin+[voisin[0]]))
+
         return None
                             
 
-
     def min_power(self, src, dest):  # Question 6 #
-
         """
-
         Should return path, min_power.
-
         """
 
         # On procède à une dichotomie en commencant par les puisances de 2 afin d'éviter de tester trop de puissances
-
         i = 1
-
         g = Graph.get_path_with_power(self, src, dest, i)
 
         if g == 0:
-
             return None
 
-        
-
         while g is None:
-
             i *= 2
-
             g = Graph.get_path_with_power(self, src, dest, i)
 
-
-
         bas = i/2
-
         haut = i
 
-
-
         while abs(bas-haut) > 1e-5:
-
             milieu = math.floor((haut+bas)/2)
-
             h = Graph.get_path_with_power(self, src, dest, milieu)
 
-
-
             if h is None:
-
                 bas = milieu
 
-
-
             else:
-
                 haut = milieu
 
-
-
             h = Graph.get_path_with_power(self, src, dest, math.floor(haut))
-
-
 
         return [h, math.floor(haut)]
 
 
-
-    # Pour la complexité : on utilise get_path_with_power dans l'algorithme dichotomique, la dichotomie se fait en O(log(i)), ici i est la puissance de 2 minimal qui dépasse p_min
-
-    # La complexité est donc de O(E*i) = O(E).
-
-
-
-
-
 def graph_from_file(filename):  # Question 1 et 4 #
-
     """
-
     Reads a text file and returns the graph as an object of the Graph class.
 
-
-
     The file should have the following format:
-
         The first line of the file is 'n m'
-
         The next m lines have 'node1 node2 power_min dist' or 'node1 node2 power_min' (if dist is missing, it will be set to 1 by default)
-
         The nodes (node1, node2) should be named 1..n
-
         All values are integers.
 
-
-
     Parameters:
-
-
-
     -----------
-
-
-
     filename: str
-
         The name of the file
 
-
-
     Outputs:
-
-
-
     -----------
-
-
-
     g: Graph
-
         An object of the class Graph with the graph from file_name.
-
     """
 
-
-
     with open(filename, "r") as file:
-
         n, m = map(int, file.readline().split())
-
         g = Graph(range(1, n+1))
 
-
-
         for _ in tqdm(range(m)):
-
             edge = list(map(int, file.readline().split()))
 
-
-
             if len(edge) == 3:
-
                 node1, node2, power_min = edge
-
                 g.add_edge(node1, node2, power_min)  # Si la distance n'est pas précisée, la valeur par défaut est 1
 
-
-
             elif len(edge) == 4:
-
                 node1, node2, power_min, dist = edge
-
                 g.add_edge(node1, node2, power_min, dist)
 
-
-
             else:
-
                 raise Exception("Format incorrect")
 
-
-
     return g
-
-
-
 
 
 # Question 10 #
