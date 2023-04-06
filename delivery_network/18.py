@@ -9,7 +9,7 @@ from tqdm import tqdm
 g_18 = graph_from_file('input/network.1.in')
 
 
-with open('input/routes.3.in', "r") as file:
+with open('input/routes.1.in', "r") as file:
 
     L = []
     [n] = list(map(int, file.readline().split()))

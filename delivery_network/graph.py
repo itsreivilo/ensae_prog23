@@ -264,7 +264,9 @@ def fonction_chrono(filename,  g_ch):
 
 
 # Question 12 #
-
+    """
+    Premiere version de kruskal qui ne fonctionne pas 
+    
 def Find(x, Parent):
 
     while x != Parent[x]:
@@ -340,6 +342,58 @@ def kruskal(g):
     return [g_mst, Parent]
 
 # Nous rencontrons encore des difficultés à terminer l'Union-Find de façon fonctionnelle
+    """
+    
+def kruskal(g):
+    Deja_vu = {} 
+
+    arretes = []
+
+    for node_a in g.nodes:
+
+        for arrete in g.graph[node_a]: 
+
+            node_b, p, d = arrete
+
+            if not ((node_a, node_b) in Deja_vu):
+
+                Deja_vu[(node_a, node_b)] = True
+
+                Deja_vu[(node_b, node_a)] = True 
+
+                arretes.append((node_a, node_b, p, d))
+        
+    arretes.sort(key= lambda a : a[2]) # on trie les arretes par puissance croissante
+    
+
+    # On construit l'arbre
+
+    g_mst = Graph(g.nodes)
+
+    arbre_connecter = {n: [n] for n in g_mst.nodes} # on identifie avec qui est connecté n 
+
+        
+    for arrete in arretes:
+
+        
+        node_a, node_b, p, d = arrete
+
+        if not (arbre_connecter[node_b][0] == arbre_connecter[node_a][0]):
+
+            g_mst.add_edge(node_a, node_b, p, d)
+
+            for node_c in arbre_connecter[node_b]: # on fusionne les deux arbres
+
+                arbre_connecter[node_a].append(node_c)
+
+                arbre_connecter[node_c] = arbre_connecter[node_a] 
+                               
+    return g_mst
+
+
+
+
+
 
 # Question 13 #
 
@@ -350,31 +404,46 @@ print(kruskal(g))
 # Question 14 #
 
 def min_power_opti(g ,t):
+    src, dest = t[0], t[1]
+    g_mst = kruskal(g)
+    p_min = 0
+    A_examiner = [(src, [src])]
+    chemins = []
+    deja_vu = []
+    power = np.inf
 
-    g_mst = kruskal(g)[0]
-    Parent = kruskal(g)[1]
+    while A_examiner != []:
 
-    # On a la liste des arrêtes et en se servant du dictionnaire on connait l'ordre des noeuds
+        sommet, chemin = A_examiner.pop(0)
 
-    source, destination = t[0], t[1]
-    M = g_mst.get_path_with_power(t[0], t[1], np.inf)
-    p = 0
+        deja_vu.append(sommet)
 
-    if M == 0:
-        return None
+        for voisin in g_mst.graph[sommet]:
 
-    for i in tqdm(range(len(M)-1)):
-        a, b = M[i], M[i+1]
+            if voisin[0] not in deja_vu:
 
-        for u in g.graph[a]:
+                if voisin[1] <= power:
 
-            if u[0] == M[i+1]:
-                c = u[1]
+                    if voisin[0] == dest:
+                        chemins.append(chemin + [voisin[0]])
+                        for i in range(len(chemins[0])-1):
 
-                if c > p:
-                    p = c
+                            for voisin1 in g.graph[chemins[0][i]]:
 
-    return M, p
+                                if voisin1[0] == chemins[0][i+1]:
+
+                                    if voisin1[1] > p_min:
+
+                                        p_min = voisin1[1]
+                        
+                        return p_min
+                        A_examiner = []
+
+                    else:
+                        A_examiner.append((voisin[0], chemin+[voisin[0]]))
+    print(p_min)
+    return None
+    
 
 
 # Question 15 #
@@ -406,65 +475,92 @@ def fonction_chrono_opti(filename,  g_ch):
 
 
 #Question 18
-from graph import Graph, graph_from_file
+#Question 18
+from graph import Graph, graph_from_file, min_power_opti
 from operator import itemgetter
+from tqdm import tqdm
 
 #Première idée : algorithme glouton
 def maximisation_profit():
+    # On commence par associer à chaque trajet le profit rapporté 
+    g_18 = graph_from_file('input/network.1.in')
 
-    j = graph_from_file('network.1.in')
 
-    g = open('routes.1.in', 'r')
-    L = []
-    n = g.readline()
+    with open('input/routes.1.in', "r") as file:
 
-    for _ in range(n):
-        edge = list(map(int, g.readline().split()))
-        src, dst, util = edge
-        L.append(((src,dst),util))
-        if len(edge) != 3:
-            raise Exception("Format incorrect")
+        L = []
+        [n] = list(map(int, file.readline().split()))
+        
+        
 
-    # L est la liste des trajets et de l'utilité associée
+        for _ in range(n):
+            edge = list(map(int, file.readline().split()))
+            if len(edge) == 3:
+                src, dst, util = edge
+                L.append(((src,dst),util))
+            if len(edge) == 4:
+                src, dst, util, l = edge
+                L.append(((src,dst),util))
 
-    h = open('trucks.1.in', 'r')
-    C = []
-    m = h.readline()
+        # L est la liste des trajets et de l'utilité associée
 
-    for _ in range(m):
-        edge = list(map(int, h.readline().split()))
-        power, cout = edge
-        L.append((power, cout))
-        if len(edge) != 2:
-            raise Exception("Format incorrect")
 
-    # C est la liste des coûts et de la puissance
+        h = open('input/trucks.0.in', 'r')
+        C = []
+        [m] = list(map(int, h.readline().split()))
 
-    L_Sort = sorted(L, key=itemgetter(1), reverse=True)
-    # On trie les trajets par ordre décroissant de profit
+        for _ in range(m):
+            edge = list(map(int, h.readline().split()))
+            if len(edge) == 2:
+                power, cout = edge
+                C.append((power, cout))
+            if len(edge) == 3:
+                power, cout, l = edge
+                C.append((power, cout))
 
-    C_Sort = sorted(C, key=itemgetter(0,1))
-    # On trie les camions par ordre croissant de puissance puis par ordre croissant de coût
+        # C est la liste de la puissance et des couts
 
-    B = 25*(10**9)
-    # B est le budget de l'entreprise
+        '''for each trajet 
+        on cherche la puissance min necessaire
+        on cherche le camion le moins cher avec au moins cette puissance et on l'ajoute
+        on se retrouvera avec une liste de tuples (trajet, utilite, cout)
+        profit = utilite - cout
+        liste de tuples (trajet, utilite, cout, profit)'''
 
-    R = []
-    # R sera la liste des camions à acheter associés à leur trajet respectif
+        L_Sort = sorted(L, key=itemgetter(1), reverse=True)
+        
+        # On trie les trajets par ordre décroissant d'utilité
 
-    Pi = 0
-    # Pi sera le profit total
+        C_Sort = sorted(C, key=itemgetter(0,1))
+        # On trie les camions par ordre croissant de puissance puis par ordre croissant de coût
+        
+        B = 25*(10**9)
+        # B est le budget de l'entreprise
 
-    for i in range(len(L_Sort)) :
-        puis = Graph.min_power(self, L_Sort[i][0])
-        J = []
-        while J == []:
-            for j in range(len(C_Sort)):
-                if C_Sort[j][0] >= puis:
-                    J.append(C_Sort[j][0])
-        if J[0][1] <= B:
-            B = B - J[0][1]
-            R.append((L_Sort[i][0], C_Sort[j]))
-            Pi += J[0][0]
+        R = []
+        # R sera la liste des camions à acheter associés à leur trajet respectif
 
-    print('La liste des camions à acheter est : ', R,'\n Le profit total ainsi réalisé par l\'entreprise sera de', Pi, 'et son budget restant sera de', B)
+        Pi = 0
+        # Pi sera le profit total
+
+        for i in tqdm(range(len(L_Sort))):
+            puis = min_power_opti(g_18, L_Sort[i][0])
+            if puis == None:
+                continue
+            J = []
+            while J == []:
+                for j in range(len(C_Sort)):
+                
+                    if C_Sort[j][0] >= puis:
+                        
+                        A = list(C_Sort[j:len(C_Sort)])
+                        A = sorted(A, key=itemgetter(1))
+
+                        J.append(A[0])
+                        if J[0][1] <= B:
+                            B = B - J[0][1]
+                            R.append((L_Sort[i][0], C_Sort[j]))
+                            Pi += L_Sort[i][1] - J[0][1]
+        
+
+        print('La liste des camions à acheter est : ', R,'\n Le profit total ainsi réalisé par l\'entreprise sera de', Pi, 'et son budget restant sera de', B)
