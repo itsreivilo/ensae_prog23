@@ -243,132 +243,67 @@ def graph_from_file(filename):  # Question 1 et 4 #
 
 def fonction_chrono(filename,  g_ch):
 
-
-
     t = time.perf_counter()
 
 # Ouverture du fichier et récupération des données
 
     with open(filename, "r") as file:
-
         k = map(int, file.readline().split())
 
 # On choisit au hasard un trajet et on applique la fonction, on repète le processus 100 fois pour trouver une valeur moyenne
 
     for i in range(100):
-
         a = g_ch.nodes[random.randint(0, len(g_ch.nodes)-1)]
-
         b = g_ch.nodes[random.randint(0, len(g_ch.nodes)-1)]
-
         M = g_ch.min_power(a, b)
-
         L, p = M[0], M[1]
 
-
-
     t_int = time.perf_counter()
-
     t_fin = (t_int - t)*(k/100)
-
     return t_fin
-
-
-
-
-
-# Test de la fonction et du temps nécessaire (semble ne pas fonctionner pour le moment mais nous n'avons pas encore réussi à résoudre ce problème)
-
-'''for x in range(1,11):
-
-    L= []
-
-    g_ch = graph_from_file('input/network.'+str(x)+'.in')
-
-    route = 'input/routes.'+str(x)+'.in'
-
-    L.append(fonction_chrono(route,g_ch))
-
-print(L)'''
-
 
 
 # Question 12 #
 
-
-
-
-
 def Find(x, Parent):
 
-
-
     while x != Parent[x]:
-
         x = Parent[x]
 
     return x
 
 
-
-
-
 def Union(x,y, Parent):
-
     xracine = Find(x, Parent)
-
     yracine = Find(y, Parent)
 
-
-
     if xracine != yracine:
-
         Parent[xracine] = yracine
-
-
-
 
 
 def kruskal(g):
 
     L = []  # L correspondra à l'arbre couvrant minimal, avec les noeuds du haut vers le bas par composante connexe
-
-
-
     noeud_deja_vu = {x: False for x in g.nodes}
 
     for a in tqdm(g.connected_components()): # On applique ce processus à chaque composante connexe
-
         R = []  
-
         T = [] # T sera la liste des arrêtes de chacune des composantes connexes
 
-
-
         for i in range(len(a)):
-
             b = a[i]
 
-            
-
             for j in g.graph[b]:
-
                 (u,v,w) = j
 
                 if j not in(R) and not(noeud_deja_vu[j[0]]):
-
                     T.append((b, j[0], j[1]))
-
                     R.append(j)
 
             noeud_deja_vu[b] = True
 
-        
-
          # Maintenant on a la liste des arrêtes sous la forme (noeud1,noeud2,puissance), ce qui va nous servir pour l'Union-Find : T
-
          # Sinon on aurait juste pu ouvrir le fichier et parcourir les arrêtes.
-
 
         # O(NLOGN)
         N = len(T)
@@ -376,176 +311,100 @@ def kruskal(g):
         if N >1:
 
             for n in range(1,N): # On trie les arrêtes par ordre croissant
-
                 cle = T[n]
-
                 j = n-1
 
-
-
                 while j>=0 and T[j][2] > cle[2]:
-
                     T[j+1] = T[j]
-
                     j = j-1
-
-
 
                 T[j+1] = cle
 
-
-
         # On va maintenant se servir de l'Union-Find pour déterminer si l'arrête ajoutée crée un cycle ou pas 
-
-
 
         Parent = {x: x for x in g.nodes}
 
-
-
         for a in T:
-
             u, v = a[0], a[1]
 
-
-
             if Find(u, Parent) != Find(v, Parent):
-
                 L.append(a)
-
                 Union(u,v, Parent)
 
     n = len(L)
-
     k, j = str(n+1), str(n)
-
     g_mst = Graph()
 
     for i in L:
         g_mst.add_edge(i[0], i[1], i[2])
 
-
-
     return [g_mst, Parent]
 
 # Nous rencontrons encore des difficultés à terminer l'Union-Find de façon fonctionnelle
 
-
-
 # Question 13 #
 
-
-
 g = graph_from_file('input/network.05.in')
-
 print(kruskal(g))
-
 
 
 # Question 14 #
 
-
-
-
-
 def min_power_opti(g ,t):
-
-
 
     g_mst = kruskal(g)[0]
     Parent = kruskal(g)[1]
 
-
-
     # On a la liste des arrêtes et en se servant du dictionnaire on connait l'ordre des noeuds
 
-
-
     source, destination = t[0], t[1]
-
-    
-
     M = g_mst.get_path_with_power(t[0], t[1], np.inf)
-
     p = 0
+
     if M == 0:
         return None
-    for i in tqdm(range(len(M)-1)):
 
+    for i in tqdm(range(len(M)-1)):
         a, b = M[i], M[i+1]
 
         for u in g.graph[a]:
 
             if u[0] == M[i+1]:
-
                 c = u[1]
 
                 if c > p:
-
                     p = c
-
-
 
     return M, p
 
 
-
-
-
-# Question 15$
-
-# Complexité ok 
+# Question 15 #
 
 def fonction_chrono_opti(filename,  g_ch):
-
-
 
     t = time.perf_counter()
 
 # Ouverture du fichier et récupération des données
 
     with open(filename, "r") as file:
-
         k = map(int, file.readline().split())
 
 # On choisit au hasard un trajet et on applique la fonction, on repète le processus 100 fois pour trouver une valeur moyenne
 
     for i in range(100):
-
         a = g_ch.nodes[random.randint(0, len(g_ch.nodes)-1)]
-
         b = g_ch.nodes[random.randint(0, len(g_ch.nodes)-1)]
         [M, N] = min_power_opti(g, [a,b])[0]
+
         if [M, N] == None:
             return None
         
-
         L, p = M[0], M[1]
 
-
-
     t_int = time.perf_counter()
-
     t_fin = (t_int - t)*(k/100)
-
     return t_fin
 
-"""
-fichier = open("myFile.txt", "w+")
-
-    fichier.write(str(k)+str(j))
-
-    for u in L:
-
-        Coordonnees = str('u[0]'), str('u[1]'), str('u[2]')
-
-        fichier.write(str(u[0]) + str(u[1]) + str(u[2]) + '\n')
-
-    fichier.close()
-
-    g_mst = graph_from_file(fichier)-
-
-    """
 
 #Question 18
 from graph import Graph, graph_from_file
