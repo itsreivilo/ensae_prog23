@@ -20,7 +20,7 @@ file_name = "network.2.in"
 # print(min_power_opti(g, [1, 36866]))
 
 # Test de la fonction et du temps nécessaire Q10
-"""
+
 def temps_chemin(x):
     g_ch = graph_from_file('input/network.'+str(x)+'.in')
     route = 'input/routes.'+str(x)+'.in'
@@ -28,7 +28,7 @@ def temps_chemin(x):
 
 print(temps_chemin(1))
 
-"""
+
 # Question 13 #
 """
 g = graph_from_file('input/network.04.in')
@@ -37,10 +37,10 @@ print(kruskal(g))
 
 # Question 14 
 g = graph_from_file('input/network.2.in')
-g_mst = kruskal(g)
+# g_mst = kruskal(g)
 #print(g_mst)
 #print(g_mst.get_path_with_power(1, 36866,np.inf))
-print(min_power_opti(g, [1,36866]))
+#print(min_power_opti(g, [1,36866]))
 
 # Question 15 #
 """

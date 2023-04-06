@@ -1,8 +1,9 @@
-import time
+
 import random
 import numpy as np
 import math
 from tqdm import tqdm
+from time import perf_counter
 
 class Graph:
     """
@@ -139,7 +140,7 @@ class Graph:
     def get_path_with_power(self, src, dest, power):  # Question 3 #
         """ Teste s'il existe un chemin possible entre src et dest avec pour puissance associé au camion la puisance power """
         A_examiner = [(src, [src])]
-        chemins = []
+        
         deja_vu = []
 
         while A_examiner != []:
@@ -153,8 +154,8 @@ class Graph:
                     if voisin[1] <= power:
 
                         if voisin[0] == dest:
-                            chemins.append(chemin+ [voisin[0]])
-                            return chemins[0]
+                        
+                            return chemin+ [voisin[0]]
                             A_examiner = []
 
                         else:
@@ -243,7 +244,7 @@ def graph_from_file(filename):  # Question 1 et 4 #
 
 def fonction_chrono(filename,  g_ch):
 
-    t = time.perf_counter()
+    t = perf_counter()
 
 # Ouverture du fichier et récupération des données
 
@@ -252,14 +253,14 @@ def fonction_chrono(filename,  g_ch):
 
 # On choisit au hasard un trajet et on applique la fonction, on repète le processus 100 fois pour trouver une valeur moyenne
 
-    for i in range(100):
+    for i in range(10):
         a = g_ch.nodes[random.randint(0, len(g_ch.nodes)-1)]
         b = g_ch.nodes[random.randint(0, len(g_ch.nodes)-1)]
         M = g_ch.min_power(a, b)
         L, p = M[0], M[1]
 
-    t_int = time.perf_counter()
-    t_fin = (t_int - t)*(k/100)
+    t_int = perf_counter()
+    t_fin = (t_int - t)*(k/10)
     return t_fin
 
 
@@ -450,7 +451,7 @@ def min_power_opti(g ,t):
 
 def fonction_chrono_opti(filename,  g_ch):
 
-    t = time.perf_counter()
+    t = perf_counter()
 
 # Ouverture du fichier et récupération des données
 
@@ -469,12 +470,11 @@ def fonction_chrono_opti(filename,  g_ch):
         
         L, p = M[0], M[1]
 
-    t_int = time.perf_counter()
+    t_int = perf_counter()
     t_fin = (t_int - t)*(k/100)
     return t_fin
 
 
-#Question 18
 #Question 18
 from graph import Graph, graph_from_file, min_power_opti
 from operator import itemgetter
