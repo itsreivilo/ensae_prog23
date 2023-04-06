@@ -305,7 +305,6 @@ def kruskal(g):
          # Maintenant on a la liste des arrêtes sous la forme (noeud1,noeud2,puissance), ce qui va nous servir pour l'Union-Find : T
          # Sinon on aurait juste pu ouvrir le fichier et parcourir les arrêtes.
 
-        # O(NLOGN)
         N = len(T)
 
         if N >1:
@@ -413,7 +412,6 @@ from operator import itemgetter
 #Première idée : algorithme glouton
 def maximisation_profit():
 
-    # On commence par associer à chaque trajet le profit rapporté 
     j = graph_from_file('network.1.in')
 
     g = open('routes.1.in', 'r')
@@ -429,7 +427,6 @@ def maximisation_profit():
 
     # L est la liste des trajets et de l'utilité associée
 
-
     h = open('trucks.1.in', 'r')
     C = []
     m = h.readline()
@@ -442,13 +439,6 @@ def maximisation_profit():
             raise Exception("Format incorrect")
 
     # C est la liste des coûts et de la puissance
-
-    '''for each trajet 
-    on cherche la puissance min necessaire
-    on cherche le camion le moins cher avce au moins cette puissance et on lajoute
-    on se retrouvera avec une liste de tuples (trajet, utilite, cout)
-    profit = utilite - cout
-    liste de tuples (trajet, utilite, cout, profit)'''
 
     L_Sort = sorted(L, key=itemgetter(1), reverse=True)
     # On trie les trajets par ordre décroissant de profit
