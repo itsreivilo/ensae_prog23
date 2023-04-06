@@ -253,14 +253,14 @@ def fonction_chrono(filename,  g_ch):
 
 # On choisit au hasard un trajet et on applique la fonction, on repète le processus 100 fois pour trouver une valeur moyenne
 
-    for i in range(10):
+    for i in tqdm(range(3)):
         a = g_ch.nodes[random.randint(0, len(g_ch.nodes)-1)]
         b = g_ch.nodes[random.randint(0, len(g_ch.nodes)-1)]
         M = g_ch.min_power(a, b)
         L, p = M[0], M[1]
 
     t_int = perf_counter()
-    t_fin = (t_int - t)*(k/10)
+    t_fin = (t_int - t)*(k/3)
     return t_fin
 
 
